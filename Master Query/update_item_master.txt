@@ -1,0 +1,67 @@
+SET SERVEROUTPUT ON
+
+DECLARE
+   l_item_table                                   ego_item_pub.item_tbl_type;
+   x_item_table                                 ego_item_pub.item_tbl_type;
+   x_inventory_item_id                          mtl_system_items_b.inventory_item_id%TYPE;
+   x_organization_id                            mtl_system_items_b.organization_id%TYPE;
+   x_return_status                              VARCHAR2 (1);
+   x_msg_count                                  NUMBER (10);
+   x_msg_data                                   VARCHAR2 (1000);
+   x_message_list                               error_handler.error_tbl_type;
+BEGIN
+   --Setting FND global variables.
+   --Replace MFG user name with appropriate user name.
+   fnd_global.apps_initialize (1112
+                             , 50859
+                             , 660
+                              );
+   --FIRST Item definition
+   l_item_table (1).transaction_type := 'UPDATE';   -- Replace this with 'UPDATE' for update transaction.
+   l_item_table (1).inventory_item_id := 1447;
+--   l_item_table (1).organization_id := 84;
+   l_item_table (1).organization_code := 'GVN';
+   l_item_table (1).primary_uom_code := 'Kg';
+   l_item_table (1).minimum_order_quantity := 1000;
+   l_item_table (1).attribute21 := 25;
+   l_item_table (1).attribute22 := 2000;
+   l_item_table (1).attribute3 := 30;
+   
+   DBMS_OUTPUT.put_line ('=====================================');
+   DBMS_OUTPUT.put_line ('Calling EGO_ITEM_PUB.Process_Items API');
+   ego_item_pub.process_items (p_api_version        => 1.0
+                             , p_init_msg_list      => fnd_api.g_true
+                             , p_commit             => fnd_api.g_true
+                             , p_item_tbl           => l_item_table
+                             , x_item_tbl           => x_item_table
+                             , x_return_status      => x_return_status
+                             , x_msg_count          => x_msg_count
+                              );
+   DBMS_OUTPUT.put_line ('==================================');
+   DBMS_OUTPUT.put_line ('Return Status ==>' || x_return_status);
+
+   IF (x_return_status = fnd_api.g_ret_sts_success)
+   THEN
+      FOR i IN 1 .. x_item_table.COUNT
+      LOOP
+         DBMS_OUTPUT.put_line ('Inventory Item Id :' || TO_CHAR (x_item_table (i).inventory_item_id));
+         DBMS_OUTPUT.put_line ('Organization Id   :' || TO_CHAR (x_item_table (i).organization_id));
+      END LOOP;
+   ELSE
+      DBMS_OUTPUT.put_line ('Error Messages :');
+      error_handler.get_message_list (x_message_list      => x_message_list);
+
+      FOR i IN 1 .. x_message_list.COUNT
+      LOOP
+         DBMS_OUTPUT.put_line (x_message_list (i).MESSAGE_TEXT);
+      END LOOP;
+   END IF;
+
+   DBMS_OUTPUT.put_line ('==================================');
+EXCEPTION
+   WHEN OTHERS
+   THEN
+      DBMS_OUTPUT.put_line ('Exception Occured :');
+      DBMS_OUTPUT.put_line (SQLCODE || ':' || SQLERRM);
+      DBMS_OUTPUT.put_line ('=====================================');
+END;

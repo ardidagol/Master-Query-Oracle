@@ -1,0 +1,40 @@
+SELECT fcp.user_concurrent_program_name,
+                   fcr.request_id,
+                   fcr.request_date,
+                   fu.user_name Requested_By,
+                   fr.responsibility_name,
+                   fcr.ACTUAL_START_DATE,
+                   fcr.ACTUAL_COMPLETION_DATE,
+                   fcr.phase_code,
+                   fcr.status_code,
+                   fcr.argument_text,
+                     (  (  COALESCE (
+                              (fcr.ACTUAL_COMPLETION_DATE - fcr.ACTUAL_START_DATE),
+                              0)
+                         * 24)
+                      * 60)
+                   * 60
+                      TIMES_SEC,
+                     (  COALESCE (
+                           (fcr.ACTUAL_COMPLETION_DATE - fcr.ACTUAL_START_DATE),
+                           0)
+                      * 24)
+                   * 60
+                      TIMES_MIN
+              FROM fnd_concurrent_requests fcr,
+                   fnd_concurrent_programs_tl fcp,
+                   fnd_user fu,
+                   fnd_responsibility_tl fr
+             WHERE     1 = 1
+                   AND fcr.concurrent_program_id = fcp.concurrent_program_id
+                   AND fcr.requested_by = fu.user_id
+                   AND fcr.responsibility_id = fr.responsibility_id
+                   AND USER_CONCURRENT_PROGRAM_NAME LIKE 'SHP%'
+                   AND fcr.ACTUAL_START_DATE > '1-AUG-2020'
+                   --AND fcr.ACTUAL_START_DATE < '1-SEP-2020'
+                   AND   (  COALESCE (
+                               (  fcr.ACTUAL_COMPLETION_DATE
+                                - fcr.ACTUAL_START_DATE),
+                               0)
+                          * 24)
+                       * 60 > 10

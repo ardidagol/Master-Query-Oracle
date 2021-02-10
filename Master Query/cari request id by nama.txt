@@ -1,0 +1,24 @@
+SELECT
+    user_concurrent_program_name,
+    responsibility_name,
+    request_date,
+    argument_text,
+    request_id,
+    phase_code,
+    status_code,
+    logfile_name,
+    outfile_name,
+    output_file_type,
+    user_name
+FROM
+    fnd_concurrent_requests fcr,
+    fnd_concurrent_programs_tl fcp,
+    fnd_responsibility_tl fr,
+    fnd_user fu
+WHERE
+    fcr.CONCURRENT_PROGRAM_ID = fcp.concurrent_program_id
+    and fcr.responsibility_id = fr.responsibility_id
+    and fcr.requested_by = fu.user_id
+    and request_id = '2330548'
+--    and user_name = upper(:user_name)
+ORDER BY REQUEST_DATE DESC;

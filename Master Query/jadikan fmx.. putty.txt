@@ -1,0 +1,1 @@
+frmcmp_batch userid=apps/apps module=XXSHP_GMD_CLIST_UT.fmb output_file=$XXSHP_TOP/forms/US/XXSHP_GMD_CLIST_UT.fmx module_type=form batch=no compile_all=special

@@ -1,0 +1,9 @@
+SUM (TBL_ALL.debit)
+            OVER (PARTITION BY ledger_name,
+                               jeh_currency_code,
+                               balance_type,
+                               encumbrance_type_id,
+                               je_source,
+                               period_name,
+                               accounting_code_combination)
+            je_source_period_dr,

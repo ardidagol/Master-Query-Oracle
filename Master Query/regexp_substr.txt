@@ -1,0 +1,20 @@
+SELECT DISTINCT expedition_name_id,
+                vehicle_id,
+                vehicle_type,
+--                vehicle_number,
+--                substr(UPPER (vehicle_number),0,11),
+--                instr(UPPER (vehicle_number),'_',1,1),
+--                trim(both '_' from UPPER (vehicle_number)),
+--                ltrim(UPPER (vehicle_number), '_'),
+                regexp_substr(UPPER (vehicle_number),'[^_]+', 1)
+                --case when 
+  FROM XXSHP_EXD_SPM_SMT_HDR_V aa
+ WHERE     vehicle_number IS NOT NULL
+       AND vehicle_number NOT LIKE 'X%'
+       AND vehicle_number NOT LIKE 'x%' 
+       AND vehicle_number NOT LIKE '-%'
+       and vehicle_number not like 'BAP%' 
+       AND expedition_name_id IS NOT NULL
+       and instr(UPPER (vehicle_number),'_',1,1) > 0
+
+select REGEXP_SUBSTR('Oracle 2010', 'O r a c l e', 1, 1, 'x'), REGEXP_REPLACE('021/LPP/BMS.', '(.)', '\1 '), REGEXP_INSTR('ardi@gmail.com', '\w+@\w+(\.\w+)+'),REGEXP_COUNT('Albert Einstein', 'e', 7, 'c'), REGEXP_SUBSTR ('RBSUG.KN1','[^.]+',1,1) from dual

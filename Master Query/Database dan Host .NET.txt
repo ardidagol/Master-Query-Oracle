@@ -1,0 +1,3 @@
+usrRptAnalisisDB
+usrRptAnalisisDB
+10.104.1.249

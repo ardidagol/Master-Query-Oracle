@@ -1,0 +1,15 @@
+Declare
+   error_item varchar2(50);
+   curr_item_label varchar2(100);
+Begin
+   error_item := :system.trigger_item;
+   if error_type = 'FRM' and error_code = 40202 then
+      curr_item_label := get_item_property(error_item, prompt_text);
+     --- you can use alert also to show the message 
+      message(curr_item_label || ' cannot be left blank.');
+   else
+      message(error_text);
+      --- visual attribute a_errors must exists or create your own 
+      set_item_property(error_item, current_record_attribute, 'A_errors');
+   end if; 
+end;

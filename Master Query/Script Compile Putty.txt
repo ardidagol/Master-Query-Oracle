@@ -1,0 +1,62 @@
+frmcmp_batch XXSHP_INV_ITEM_MST_REG.fmb apps/APPS output_file=$XXSHP_TOP/forms/US/XXSHP_INV_ITEM_MST_REG.fmx
+
+frmcmp_batch module=CUSTOM.pll userid=apps/apps output_file=CUSTOM.plx module_type=LIBRARY batch=yes compile_all=special
+
+frmcmp_batch XXSHP_GMD_SMPL_INQ_DSP_BY_POTS.fmb apps/APPS output_file=$XXSHP_TOP/forms/US/XXSHP_GMD_SMPL_INQ_DSP_BY_POTS.fmx
+
+
+frmcmp_batch XXSHP_OE_EXD_CREATE_SPM.fmb apps/APPS output_file=$XXSHP_TOP/forms/US/XXSHP_OE_EXD_CREATE_SPM.fmx
+
+
+frmcmp_batch XXSHP_OE_EXD_SPM_SHIP.fmb apps/APPS output_file=$XXSHP_TOP/forms/US/XXSHP_OE_EXD_SPM_SHIP.fmx
+
+
+frmcmp_batch XXSHP_GMD_SMPL_ADM_INQ.fmb apps/APPS output_file=$XXSHP_TOP/forms/US/XXSHP_GMD_SMPL_ADM_INQ.fmx
+
+frmcmp_batch XXSHP_WH_PPL_PICK.fmb apps/APPS output_file=$XXSHP_TOP/forms/US/XXSHP_WH_PPL_PICK.fmx
+
+frmcmp_batch XXSHP_WH_MTRG_PICK.fmb apps/APPS output_file=$XXSHP_TOP/forms/US/XXSHP_WH_MTRG_PICK.fmx
+
+
+frmcmp_batch XXGVN_ORG_ITM.fmb apps/APPS output_file=$XXGVN_TOP/forms/US/XXGVN_ORG_ITM.fmx
+
+
+
+frmcmp_batch XXCRM_GEN_VOUCHER.fmb apps/APPS output_file=$XXCRM_TOP/forms/US/XXCRM_GEN_VOUCHER.fmx
+
+frmcmp_batch XXCRM_FORMULA_MST.fmb apps/APPS output_file=$XXCRM_TOP/forms/US/XXCRM_FORMULA_MST.fmx
+
+frmcmp_batch XXCRM_IN_OUT_OKP.fmb apps/APPS output_file=$XXCRM_TOP/forms/US/XXCRM_IN_OUT_OKP.fmx
+
+frmcmp_batch XXCRM_NEW_MO_TRANSACT.fmb apps/APPS output_file=$XXCRM_TOP/forms/US/XXCRM_NEW_MO_TRANSACT.fmx
+
+frmcmp_batch XXCRM_NEW_MO_TRANSACT_MANUAL.fmb apps/APPS output_file=$XXCRM_TOP/forms/US/XXCRM_NEW_MO_TRANSACT_MANUAL.fmx
+
+
+frmcmp_batch XXCRM_MO_TRANSACT_MANUAL.fmb apps/APPS output_file=$XXCRM_TOP/forms/US/XXCRM_MO_TRANSACT_MANUAL.fmx
+
+
+frmcmp_batch XXSHP_TRAINE_TEST.fmb apps/APPS output_file=$XXSHP_TOP/forms/US/XXSHP_TRAINE_TEST.fmx
+
+1317
+
+10.201.10.43
+
+user: shpdry
+
+pass: 123shpdry
+
+port 22
+/apps/shpdry/fs1/EBSapps/appl/xxshp/12.0.0/forms/US/
+
+
+
+
+. EBSapps.env
+
+http://shpappdev2.kalbefood.local:8080/
+
+
+akun shpdry
+reza.fajrin
+jangkrik12

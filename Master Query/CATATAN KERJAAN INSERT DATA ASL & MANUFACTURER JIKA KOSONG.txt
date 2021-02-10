@@ -1,0 +1,67 @@
+-- INSERT ASL --
+
+INSERT INTO xxshp_po_asl_attributes
+                             (ASL_ID,REG_HDR_ID,VENDOR_BUSINESS_TYPE,VENDOR_ID,VENDOR_SITE_ID,ASL_STATUS_ID,GLOBAL_FLAG,
+                              RELEASE_METHOD,
+                              SHELF_LIFE,COUNTRY,ORGANIZATION_ID,
+                              supplier_item,
+                              created_by,creation_date, last_updated_by, last_update_date, last_update_login) 
+                            (SELECT XXSHP_PO_ASL_ATTRIBUTES_S.NEXTVAL,
+                            (SELECT REG_HDR_ID FROM XXSHP_INV_MASTER_ITEM_REG WHERE ITEM_CODE = 'PNMBR010'),
+                             'DIRECT',--:xxshp_po_asl_attributes_v.VENDOR_BUSINESS_TYPE,
+                             vendor_id,
+                             VENDOR_SITE_ID,
+                             2, --approved --:xxshp_po_asl_attributes_v.ASL_STATUS_ID,
+                             'Y',--:xxshp_po_asl_attributes_v.GLOBAL_FLAG
+                             'MANUAL',--release_method
+                             shelf_life, 
+                             country,--:xxshp_po_asl_attributes_v.COUNTRY,
+                             84,
+                             supplier_item,
+                            created_by, sysdate,created_by, sysdate, last_update_login
+                            FROM XXSHP_INV_MASTER_ITEM_STG WHERE SEGMENT1 = 'PNMBR010'
+                            );
+							
+-- INSERT INV MANUFACTURER --
+
+INSERT INTO xxshp_inv_manufacturers
+                             (MFG_ID,REG_HDR_ID,COUNTRY,MFG_STATUS,VENDOR_ID,VENDOR_SITE_ID,   
+                              created_by,creation_date,last_updated_by,last_update_date,last_update_login)   
+                            (
+                            SELECT XXSHP_INV_MANUFACTURERS_S.NEXTVAL,
+                            (SELECT REG_HDR_ID FROM XXSHP_INV_MASTER_ITEM_REG WHERE ITEM_CODE = 'PNMBR010'),
+                             country, --:xxshp_inv_manufacturers_v.COUNTRY,
+                             'Active', --:xxshp_inv_manufacturers_v.MFG_STATUS,
+                             vendor_id, --:xxshp_inv_manufacturers_v.VENDOR_ID,
+                             vendor_site_id, --:xxshp_inv_manufacturers_v.VENDOR_SITE_ID,   
+                             created_by, sysdate,created_by, sysdate, last_update_login
+                            FROM XXSHP_INV_MASTER_ITEM_STG WHERE SEGMENT1 = 'PNMBR010'
+                            );      
+							
+-- INSERT MFG PART --
+
+INSERT INTO xxshp_inv_mfg_part_numbers
+                                 (MFG_PART_ID,MFG_ID,MFG_PART_NUM,CERTIFICATE_MD_NUM,CERTIFICATE_MD_VALID_TO,
+                                  AKASIA_NUM,NEED_HALAL_CERTIFICATE,HALAL_CERTIFICATE_NUM,HALAL_CERTIFICATE_VALID_TO,HALAL_LOGO,HALAL_BODY, 
+                                  created_by,creation_date, last_updated_by, last_update_date, last_update_login)   
+                            (SELECT XXSHP_INV_MFG_PART_NUMBERS_S.NEXTVAL,
+                            383, -- select * from xxshp_inv_mfg_part_numbers where reg_hdr_id = 359
+                             part, --:xxshp_inv_mfg_part_numbers_v.MFG_PART_NUM,
+                             cmd_no, --:xxshp_inv_mfg_part_numbers_v.CERTIFICATE_MD_NUM,
+                             cmd_valid, --:xxshp_inv_mfg_part_numbers_v.CERTIFICATE_MD_VALID_TO,
+                             Akasia_Num, --:xxshp_inv_mfg_part_numbers_v.AKASIA_NUM,
+                             Need_Halal_Certificate, --:xxshp_inv_mfg_part_numbers_v.NEED_HALAL_CERTIFICATE,
+                             chalal_no, --:xxshp_inv_mfg_part_numbers_v.HALAL_CERTIFICATE_NUM,
+                             chalal_valid, --:xxshp_inv_mfg_part_numbers_v.HALAL_CERTIFICATE_VALID_TO,
+                             Halal_Logo, --:xxshp_inv_mfg_part_numbers_v.HALAL_LOGO,
+                             Halal_Body, --:xxshp_inv_mfg_part_numbers_v.HALAL_BODY,
+                             created_by, sysdate,created_by, sysdate, last_update_login
+                            FROM xxshp_inv_master_item_stg WHERE SEGMENT1 = 'PBNNS018'
+                            );      
+							
+							
+SELECT mfg_id, aaa.reg_hdr_id, bbb.item_code FROM xxshp_inv_manufacturers aaa, XXSHP_INV_MASTER_ITEM_REG bbb
+where aaa.reg_hdr_id = bbb.reg_hdr_id
+and bbb.ITEM_CODE IN ('PBPPM015','PBPPM016','PBPEM019','PBPEM020')
+
+###############################################################################################################################################################

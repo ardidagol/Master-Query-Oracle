@@ -1,0 +1,16 @@
+SELECT fcpt.user_concurrent_program_name,
+                   fr.responsibility_name,
+                   fe.execution_file_name
+              FROM fnd_concurrent_requests fcr,
+                   fnd_concurrent_programs_tl fcpt,
+                   fnd_concurrent_programs fcp,
+                   fnd_executables fe,
+                   fnd_user fu,
+                   fnd_responsibility_tl fr
+             WHERE     1 = 1
+                   AND fcr.concurrent_program_id = fcpt.concurrent_program_id
+                   AND fcr.concurrent_program_id = fcp.concurrent_program_id
+                   AND fcp.executable_id = fe.executable_id
+                   AND fcr.requested_by = fu.user_id
+                   AND fcr.responsibility_id = fr.responsibility_id
+                   AND USER_CONCURRENT_PROGRAM_NAME LIKE 'SHP - Populate Intransit Data'

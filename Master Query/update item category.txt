@@ -1,0 +1,82 @@
+DECLARE
+   X_RETURN_STATUS       VARCHAR2 (1000);
+   X_ERRORCODE           NUMBER;
+   X_MSG_COUNT           NUMBER;
+   X_MSG_DATA            VARCHAR2 (1000);
+   x_msg_index_out       NUMBER;
+   l_error_message       VARCHAR2 (4000);
+
+   l_CATEGORY_ID         NUMBER := 2123;
+   l_CATEGORY_SET_ID     NUMBER := 1100000041;
+   l_INVENTORY_ITEM_ID   NUMBER := 16001;
+   l_ORGANIZATION_ID     NUMBER := 539;
+BEGIN
+   --Apps Initialization is available in another section. Use the below link to know in detail
+   FND_global.APPS_INITIALIZE (1110, 50369, 7000);
+
+   INV_ITEM_CATEGORY_PUB.CREATE_CATEGORY_ASSIGNMENT (
+      P_API_VERSION         => 1.0,
+      P_INIT_MSG_LIST       => FND_API.G_FALSE,
+      P_COMMIT              => FND_API.G_FALSE,
+      X_RETURN_STATUS       => X_RETURN_STATUS,
+      X_ERRORCODE           => X_ERRORCODE,
+      X_MSG_COUNT           => X_MSG_COUNT,
+      X_MSG_DATA            => X_MSG_DATA,
+      P_CATEGORY_ID         => l_CATEGORY_ID,
+      P_CATEGORY_SET_ID     => l_CATEGORY_SET_ID,
+      P_INVENTORY_ITEM_ID   => l_INVENTORY_ITEM_ID,
+      P_ORGANIZATION_ID     => l_ORGANIZATION_ID
+   );
+
+   IF x_return_status = fnd_api.g_ret_sts_success
+   THEN
+      COMMIT;
+      DBMS_OUTPUT.put_line (
+         'Item Category Assignment using API is Successful'
+      );
+   ELSE
+      BEGIN
+         IF (fnd_msg_pub.count_msg > 1)
+         THEN
+            FOR k IN 1 .. fnd_msg_pub.count_msg
+            LOOP
+               fnd_msg_pub.get (p_msg_index       => k,
+                                p_encoded         => 'F',
+                                p_data            => x_msg_data,
+                                p_msg_index_out   => x_msg_index_out);
+
+               DBMS_OUTPUT.PUT_LINE ('x_msg_data:= ' || x_msg_data);
+
+               IF x_msg_data IS NOT NULL
+               THEN
+                  l_error_message := l_error_message || '-' || x_msg_data;
+               END IF;
+            END LOOP;
+         ELSE
+            --Only one error
+            fnd_msg_pub.get (p_msg_index       => 1,
+                             p_encoded         => 'F',
+                             p_data            => x_msg_data,
+                             p_msg_index_out   => x_msg_index_out);
+            l_error_message := x_msg_data;
+         END IF;
+
+         DBMS_OUTPUT.put_line (
+            'Error encountered by the API is ' || l_error_message
+         );
+         ROLLBACK;
+      EXCEPTION
+         WHEN OTHERS
+         THEN
+            l_error_message := SQLERRM;
+            DBMS_OUTPUT.put_line (
+               'Error encountered by the API is ' || l_error_message
+            );
+      END;
+   END IF;
+EXCEPTION
+   WHEN OTHERS
+   THEN
+      DBMS_OUTPUT.put_line('Error in Assigning Category to an Item and error is '
+                           || SUBSTR (SQLERRM, 1, 200));
+END;

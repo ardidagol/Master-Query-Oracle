@@ -1,0 +1,105 @@
+SELECT DISTINCT responsibility_id, responsibility_name
+    FROM apps.fnd_responsibility_vl a
+   WHERE     a.end_date IS NULL
+         AND a.menu_id IN
+                (    SELECT menu_id
+                       FROM apps.fnd_menu_entries_vl
+                 START WITH menu_id IN
+                               (SELECT menu_id
+                                  FROM apps.fnd_menu_entries_vl
+                                 WHERE function_id IN
+                                          (SELECT function_id
+                                             FROM applsys.fnd_form_functions a
+                                            WHERE function_name =
+                                                     :pc_function_name))
+                 CONNECT BY PRIOR menu_id = sub_menu_id)
+         AND a.responsibility_id NOT IN
+                (SELECT responsibility_id
+                   FROM apps.fnd_responsibility_vl
+                  WHERE responsibility_id IN
+                           (SELECT responsibility_id
+                              FROM applsys.fnd_resp_functions resp
+                             WHERE action_id IN
+                                      (SELECT function_id
+                                         FROM applsys.fnd_form_functions a
+                                        WHERE function_name = :pc_function_name)))
+         AND a.responsibility_id NOT IN
+                (SELECT responsibility_id
+                   FROM apps.fnd_responsibility_vl
+                  WHERE responsibility_id IN
+                           (SELECT responsibility_id
+                              FROM applsys.fnd_resp_functions resp
+                             WHERE action_id IN
+                                      (    SELECT menu_id
+                                             FROM apps.fnd_menu_entries_vl
+                                       START WITH menu_id IN
+                                                     (SELECT menu_id
+                                                        FROM apps.fnd_menu_entries_vl
+                                                       WHERE function_id IN
+                                                                (SELECT function_id
+                                                                   FROM applsys.fnd_form_functions a
+                                                                  WHERE function_name =
+                                                                           :pc_function_name))
+                                       CONNECT BY PRIOR menu_id = sub_menu_id)))
+
+
+select * from fnd_form_functions_tl ffl where Description like'%IMC%Reg%';
+
+SELECT DISTINCT u.user_name, rtl.responsibility_name, ff.function_name, ffl.user_function_name
+           FROM fnd_compiled_menu_functions cmf,
+                fnd_form_functions ff,
+                fnd_form_functions_tl ffl,
+                fnd_responsibility r,
+                fnd_responsibility_tl rtl,
+                fnd_user_resp_groups urg,
+                fnd_user u
+          WHERE cmf.function_id = ff.function_id
+            AND r.menu_id = cmf.menu_id
+            AND urg.responsibility_id = r.responsibility_id
+            AND rtl.responsibility_id = r.responsibility_id
+            AND cmf.grant_flag = 'Y'
+            AND r.application_id = urg.responsibility_application_id
+            AND u.user_id = urg.user_id
+            AND UPPER (ffl.user_function_name) = UPPER ('RCVTXVTX')
+            AND FF.FUNCTION_ID = FFL.FUNCTION_ID
+       ORDER BY u.user_name;
+
+
+
+Query on Responsibility / Menu / Form function
+--44. Find responsibility_name and its user_menu_name
+
+SELECT DISTINCT a.responsibility_name, c.user_menu_name
+FROM apps.fnd_responsibility_tl a,
+apps.fnd_responsibility b,
+apps.fnd_menus_tl c,
+apps.fnd_menus d,
+apps.fnd_application_tl e,
+apps.fnd_application f
+WHERE a.responsibility_id(+) = b.responsibility_id
+--AND a.responsibility_id = '20538'
+AND b.menu_id = c.menu_id
+AND b.menu_id = d.menu_id
+AND e.application_id = f.application_id
+AND f.application_id = b.application_id
+AND a.LANGUAGE = 'US'
+and responsibility_name ='%Sample Super User'
+and upper(user_menu_name) like '%FIND%SER%REQ%'
+
+--45. To get responsibility based on form function
+SELECT fr.responsibility_name,
+       fm.user_menu_name,
+       fme.prompt prompt_name,
+       fff.user_function_name
+FROM   apps.fnd_menu_entries_vl fme,
+       apps.fnd_menus_vl fm,
+       apps.fnd_form_functions_vl fff,
+       apps.fnd_form_vl ff,
+       apps.fnd_responsibility_vl fr
+WHERE  1 = 1
+AND    ff.form_name = 'CSXSRISR' --:p_fmb
+AND    fff.form_id = ff.form_id
+AND    fme.function_id = fff.function_id
+AND    fm.menu_id = fme.menu_id
+AND    fr.menu_id = fm.menu_id;
+
